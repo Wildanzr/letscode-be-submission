@@ -2,10 +2,12 @@ const amqp = require('amqplib')
 const { ClientError } = require('../errors')
 
 class Consumer {
-  constructor () {
+  constructor (submissionService, problemSubmissionService) {
     this.name = 'Consumer'
     this._connection = null
     this._channel = null
+    this._submissionService = submissionService
+    this._problemSubmissionService = problemSubmissionService
 
     // Bind methods
     this.consumeMessage = this.consumeMessage.bind(this)
@@ -29,11 +31,25 @@ class Consumer {
 
       // Consume message from the submission queue
       this._channel.consume('submission', async (data) => {
-        console.log('receive new message')
-
         // Parse the message then destructuring the data
         const payload = await JSON.parse(data.content.toString())
-        console.log(payload)
+        const { userId, competeProblemId, languageCode, code, tokens } = payload
+        console.log(`Incoming submission queue from ${userId} for problem ${competeProblemId}`)
+
+        // Create a new submission
+        const submission = await this._submissionService.createSubmission({ code, languageCode, tokens })
+
+        // Check problemSubmission is exist or not
+        let problemSubmission = await this._problemSubmissionService.getProblemSubmissionByCpAndUserId(competeProblemId, userId)
+        if (!problemSubmission) {
+          // Create a new problemSubmission
+          problemSubmission = await this._problemSubmissionService.createProblemSubmission({ competeProblemId, userId })
+        }
+
+        // Push submissionId to problemSubmission.listOfSubmission
+        problemSubmission.listOfSubmission.push(submission._id)
+        await problemSubmission.save()
+
         this._channel.ack(data)
       })
     } catch (error) {

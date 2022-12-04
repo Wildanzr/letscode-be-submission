@@ -6,10 +6,10 @@ const problemSubmissionSchema = new Schema({
     type: String,
     default: () => { return `ps-${nanoid(15)}` }
   },
-  competeProblemId: { type: Schema.Types.String, ref: 'competeProblems' },
-  userId: { type: Schema.Types.String, ref: 'users' },
+  competeProblemId: { type: Schema.Types.String, ref: 'competeProblems', required: true },
+  userId: { type: Schema.Types.String, ref: 'users', required: true },
   currentPoints: { type: Number, default: 0 },
-  listOfSubmission: [{ type: Schema.Types.String, ref: 'submissions' }]
+  listOfSubmission: [{ type: Schema.Types.String, ref: 'submissions', default: [] }]
 })
 
 // add index to competeProblemId and userId
