@@ -1,4 +1,6 @@
 module.exports = {
   ...require('./problemSubmissionService'),
-  ...require('./submissionService')
+  ...require('./submissionService'),
+  ...require('./consumer'),
+  ...require('./worker')
 }

@@ -2,12 +2,13 @@ const amqp = require('amqplib')
 const { ClientError } = require('../errors')
 
 class Consumer {
-  constructor (submissionService, problemSubmissionService) {
+  constructor (submissionService, problemSubmissionService, worker) {
     this.name = 'Consumer'
     this._connection = null
     this._channel = null
     this._submissionService = submissionService
     this._problemSubmissionService = problemSubmissionService
+    this._worker = worker
 
     // Bind methods
     this.consumeMessage = this.consumeMessage.bind(this)
@@ -49,6 +50,9 @@ class Consumer {
         // Push submissionId to problemSubmission.listOfSubmission
         problemSubmission.listOfSubmission.push(submission._id)
         await problemSubmission.save()
+
+        // Send tokens to worker
+        this._worker.judgeSubmissions(tokens, submission._id, competeProblemId, userId)
 
         this._channel.ack(data)
       })

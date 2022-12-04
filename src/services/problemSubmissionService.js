@@ -23,6 +23,18 @@ class ProblemSubmissionService {
     if (!problemSubmission) return false
     return problemSubmission
   }
+
+  async updateSubmissionPoint (userId, competeProblemId, point) {
+    const problemSubmission = await this.getProblemSubmissionByCpAndUserId(competeProblemId, userId)
+
+    // Check if point is greater than currentpoints, update it
+    if (point > problemSubmission.currentPoints) {
+      problemSubmission.currentPoints = point
+      await problemSubmission.save()
+    }
+
+    return problemSubmission
+  }
 }
 
 module.exports = {
