@@ -1,4 +1,4 @@
-const { ProblemSubmission } = require('../models')
+const { ProblemSubmission, User } = require('../models')
 const { ClientError } = require('../errors')
 
 class ProblemSubmissionService {
@@ -26,9 +26,15 @@ class ProblemSubmissionService {
 
   async updateSubmissionPoint (userId, competeProblemId, point) {
     const problemSubmission = await this.getProblemSubmissionByCpAndUserId(competeProblemId, userId)
+    const user = await User.findById(userId)
 
     // Check if point is greater than currentpoints, update it
     if (point > problemSubmission.currentPoints) {
+      // Check difference between currentPoints and point, then add it to user.totalPoints
+      const diff = point - problemSubmission.currentPoints
+      user.point += diff
+      await user.save()
+
       problemSubmission.currentPoints = point
       await problemSubmission.save()
     }
