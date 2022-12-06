@@ -40,6 +40,9 @@ class Consumer {
         // Create a new submission
         const submission = await this._submissionService.createSubmission({ code, languageCode, tokens })
 
+        // Put submission to user logs
+        this._submissionService.putSubmissionToUserLogs(userId, submission._id)
+
         // Check problemSubmission is exist or not
         let problemSubmission = await this._problemSubmissionService.getProblemSubmissionByCpAndUserId(competeProblemId, userId)
         if (!problemSubmission) {

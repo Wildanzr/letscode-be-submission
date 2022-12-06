@@ -1,4 +1,4 @@
-const { Submission } = require('../models')
+const { Submission, User, Log } = require('../models')
 const { ClientError } = require('../errors')
 class SubmissionService {
   constructor () {
@@ -15,6 +15,16 @@ class SubmissionService {
     const submission = await Submission.findOneAndUpdate({ _id: id }, payload, { new: true })
     if (!submission) throw new ClientError('Failed to update submission', 500)
     return submission
+  }
+
+  async putSubmissionToUserLogs (userId, submissionId) {
+    // Create log
+    const log = await Log.create({ userId, submissionId })
+
+    // Push log to user.logs
+    const user = await User.findById(userId)
+    user.logActivities.push(log._id)
+    await user.save()
   }
 }
 
