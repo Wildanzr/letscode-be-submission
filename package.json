@@ -4,15 +4,17 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "nodemon ./src/index.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "amqplib": "^0.10.3",
+    "axios": "^1.2.0",
     "dotenv": "^16.0.3",
-    "mongoose": "^6.7.5"
+    "mongoose": "^6.7.5",
+    "nanoid": "^3.3.4"
   },
   "devDependencies": {
     "eslint": "^8.29.0",
