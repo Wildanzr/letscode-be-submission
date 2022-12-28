@@ -63,7 +63,7 @@ class Consumer {
       console.log(error)
       const messages = error.messages || 'Internal server error'
       const statusCode = error.statusCode || 500
-      throw new ClientError(messages, statusCode)
+      return new ClientError(messages, statusCode)
     }
   }
 }
