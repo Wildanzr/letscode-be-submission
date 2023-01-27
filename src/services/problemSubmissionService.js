@@ -8,13 +8,13 @@ class ProblemSubmissionService {
 
   async createProblemSubmission (payload) {
     const problemSubmission = await ProblemSubmission.create(payload)
-    if (!problemSubmission) throw new ClientError('Failed to create problem submission', 500)
+    if (!problemSubmission) throw new ClientError('Gagal membuat permasalahan', 500)
     return problemSubmission
   }
 
   async updateProblemSubmission (id, payload) {
     const problemSubmission = await ProblemSubmission.findOneAndUpdate({ _id: id }, payload, { new: true })
-    if (!problemSubmission) throw new ClientError('Failed to update problem submission', 500)
+    if (!problemSubmission) throw new ClientError('Gagal memperbarui permasalaahan', 500)
     return problemSubmission
   }
 
