@@ -7,13 +7,13 @@ class SubmissionService {
 
   async createSubmission (payload) {
     const submission = await Submission.create(payload)
-    if (!submission) throw new ClientError('Failed to create submission', 500)
+    if (!submission) throw new ClientError('Gagal membuat pengumpulan', 500)
     return submission
   }
 
   async updateSubmission (id, payload) {
     const submission = await Submission.findOneAndUpdate({ _id: id }, payload, { new: true })
-    if (!submission) throw new ClientError('Failed to update submission', 500)
+    if (!submission) throw new ClientError('Gagal memperbarui pengumpulan', 500)
     return submission
   }
 
