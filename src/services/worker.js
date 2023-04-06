@@ -97,7 +97,7 @@ class Worker {
     }
 
     // Count final grade
-    point = point / (totalTestcase * 1.0) * 100
+    point = Math.round(point / (totalTestcase * 1.0) * 100)
 
     // Update submission
     const payload = {
