@@ -1,5 +1,6 @@
 const amqp = require('amqplib')
 const { ClientError } = require('../errors')
+const { logger } = require('../utils/logger')
 
 class Consumer {
   constructor (submissionService, problemSubmissionService, worker) {
@@ -15,7 +16,7 @@ class Consumer {
   }
 
   async consumeMessage () {
-    console.log('Consumer listening for messages...')
+    logger.info('Consumer listening for messages...')
 
     try {
       // Create a connection to the RabbitMQ server
@@ -35,7 +36,7 @@ class Consumer {
         // Parse the message then destructuring the data
         const payload = await JSON.parse(data.content.toString())
         const { userId, competeProblemId, languageCode, code, tokens } = payload
-        console.log(`Incoming submission queue from ${userId} for problem ${competeProblemId}`)
+        logger.info(`Incoming submission queue from ${userId} for problem ${competeProblemId}`)
 
         // Create a new submission
         const submission = await this._submissionService.createSubmission({ code, languageCode, tokens })
@@ -60,7 +61,7 @@ class Consumer {
         this._channel.ack(data)
       })
     } catch (error) {
-      console.log(error)
+      logger.error(error)
       const messages = error.messages || 'Internal server error'
       const statusCode = error.statusCode || 500
       throw new ClientError(messages, statusCode)

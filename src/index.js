@@ -1,5 +1,6 @@
 // Conifg environment
 require('dotenv').config()
+const { logger } = require('./utils/logger')
 
 // Wait for RabbitMQ to start before starting the consumer, set timeout for 30 seconds
 setTimeout(() => {
@@ -17,10 +18,10 @@ setTimeout(() => {
   mongoose.connect(process.env.DATABASE_URL, {
     useNewURLParser: true,
     useUnifiedTopology: true
-  }).then(console.log('connected to db')).catch((err) => console.log(err))
+  }).then(logger.info('connected to db')).catch((err) => logger.error(err))
 
   // Start consumer
   consumer.consumeMessage()
 }, 30000)
 
-console.log('Waiting for RabbitMQ to start...')
+logger.info('Waiting for RabbitMQ to start...')

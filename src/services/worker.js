@@ -1,4 +1,5 @@
 const axios = require('axios')
+const { logger } = require('../utils/logger')
 
 class Worker {
   constructor (submissionService, problemSubmissionService) {
@@ -39,7 +40,7 @@ class Worker {
         }
       }
     } catch (err) {
-      console.log('err', err)
+      logger.error(err)
       return {
         statusId: 13,
         data: null
@@ -58,7 +59,6 @@ class Worker {
       // wait for 800ms
       await new Promise((resolve) => setTimeout(resolve, 800))
       const res = await this.judgeSubmission(token)
-      // console.log(res)
       tempRes = res
     }
 
@@ -76,11 +76,9 @@ class Worker {
     const result = []
     const totalTestcase = tokens.length
 
-    // console.log('will judge in 5 seconds')
     // wait 5 seconds for all submissions to be judged
     await new Promise((resolve) => setTimeout(resolve, 5000))
 
-    // console.log('start judging')
     for (const token of tokens) {
       const res = await this.checkJudgeDone(token)
       result.push(res)
@@ -89,7 +87,7 @@ class Worker {
     // Grade the submission
     const grades = []
     let point = 0
-    // console.log('start grading')
+
     for (const submission of result) {
       const grade = await this.gradeSubmission(submission)
       grades.push(grade)
@@ -106,7 +104,7 @@ class Worker {
     }
     await this._submissionService.updateSubmission(submissionId, payload)
     await this._problemSubmissionService.updateSubmissionPoint(userId, competeProblemId, point)
-    console.log('Finished judging submission')
+    logger.info('Finished judging submission')
   }
 }
 
