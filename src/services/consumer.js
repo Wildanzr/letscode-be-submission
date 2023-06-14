@@ -24,6 +24,7 @@ class Consumer {
       const PORT = process.env.RABBITMQ_PORT || 5672
       const USER = process.env.RABBITMQ_USERNAME || 'guest'
       const PASSWORD = process.env.RABBITMQ_PASSWORD || 'guest'
+      console.log(`amqp://${USER}:${PASSWORD}@${HOST}:${PORT}`)
 
       this._connection = await amqp.connect(`amqp://${USER}:${PASSWORD}@${HOST}:${PORT}`)
       this._channel = await this._connection.createChannel()
